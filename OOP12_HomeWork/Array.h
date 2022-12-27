@@ -2,46 +2,50 @@
 #include <iostream>
 #include <conio.h>
 #include <Windows.h>
-template <class T, int>
+using namespace std;
+template <class T>
 class Array
 {
-	T arr*;
+	T *arr;
 	int size;
 
-	//Функция для перегрузки операторов
-	T copy(T* newArr, int newSize) {
-		for (int i = 0; i < newSize; i++) {
-			if (newArr[i] && arr[i])
-				newArr[i] = arr[i];
+	//Функция копирования из старого массива в новый
+	T* copy(int newSize, int oldSize) {
+		T* newArr = new T[newSize];
+		for (int i = 0, k = 0; i < newSize; i++) {
+			if (i < oldSize) {
+				newArr[i] = arr[k];
+				k++;
+			}
 			else
 				newArr[i] = NULL;
 		}
-		delete[] arr;
 		return newArr;
 	}
 public:
-	Array(int s) : size{ s } arr { new T[size] } {};
+	Array(int s) : size{ s } , arr { new T[size] } {};
 	Array() : Array(1) {};
 	//Неведома конкретная задача операторов, поэтому они будут изменять размер массива
-	T operator+(int value) {		
-		T* newArr = new T[size+value];
-		arr = copy(newArr, size+value);
+	void operator+(int value) {
+		int oldSize = size;
 		size += value;
+		arr = copy(size,oldSize);
+		
 	}
-	T operator-(int value) {	
-		T* newArr = new T[size-value];
-		arr = copy(newArr, size-value);
+	void operator-(int value) {
+		int oldSize = size;
 		size -= value;
+		arr = copy(size, oldSize);
 	}
-	T operator*(int value) {		
-		T* newArr = new T[size*value];
-		arr = copy(newArr, size*value);
+	void operator*(int value) {
+		int oldSize = size;
 		size *= value;
+		arr = copy(size, oldSize);
 	}
-	T operator/(int value) {
-		T* newArr = new T[size/value];
-		arr = copy(newArr, size/value);
+	void operator/(int value) {
+		int oldSize = size;
 		size /= value;
+		arr = copy(size, oldSize);
 	}
 
 
@@ -83,7 +87,7 @@ public:
 	}
 	void print() {
 		for (int i = 0; i < size; i++) {
-			std::cout << i << " ";
+			std::cout << arr[i] << " ";
 		}
 		std::cout << std::endl;
 	}
@@ -91,27 +95,27 @@ public:
 		//Не стал уж добавлять все возможные варианты 
 		srand(time(NULL));
 		if (is_same<T, char>::value) {
-			for (int i = 0; i < size; i++) {arr[i] = rand()%25+27}
+			for (int i = 0; i < size; i++) { arr[i] = rand() % 25 + 27; }
 		}
 		else if (is_same<T, int>::value) {
-			for (int i = 0; i < size; i++) { arr[i] = rand()%100 }
+			for (int i = 0; i < size; i++) { arr[i] = rand() % 100; }
 		}
 		else if (is_same<T, float>::value || is_same<T, double>::value) {
-			for (int i = 0; i < size; i++) { arr[i] = (rand()%100+10)/10 }
+			for (int i = 0; i < size; i++) { arr[i] = (float)rand()/RAND_MAX/100; }
 		}
 		else if (is_same<T, long>::value){
-			for (int i = 0; i < size; i++) { arr[i] = rand()% pow(10,5) }
+			for (int i = 0; i < size; i++) { arr[i] = rand() % 10000000; }
 		}
 		else if (is_same<T, long long>::value) {
-			for (int i = 0; i < size; i++) { arr[i] = rand() % pow(10,10) }
+			for (int i = 0; i < size; i++) { arr[i] = rand() % 1000000000000000; }
 		}
 	}
 	void fill() {
 		for (int i = 0; i < size; i++) {
-			cout << "Etner a " i << " element - ";
+			cout << "Enter a " << i+1 << " element - ";
 			cin >> arr[i];
 		}
-		system("cls");
+
 	}
 	T clear() {
 		delete[] arr;
